@@ -1,0 +1,101 @@
+{
+  "videos": [
+    "/video/From Klickpin.com- 1013169247413901862-pin-id-1013169247413901862.mp4",
+    "/video/From Klickpin.com- 1074741898548575297-pin-id-1074741898548575297.mp4",
+    "/video/From Klickpin.com- 20 Handmade Card Ideas That Make Life Easier-pin-id-903182900324234607.mp4",
+    "/video/From Klickpin.com- 804244445972250139-pin-id-804244445972250139.mp4",
+    "/video/From Klickpin.com- 931119291721798327-pin-id-931119291721798327.mp4",
+    "/video/From Klickpin.com- Quick Pasta Recipes Inspiration for Holiday 17760-pin-id-889038782728379649.mp4",
+    "/video/From Klickpin.com- Soft couple habits and clever inspiration on a budget for meaningful relationships-pin-id-601300987770825349.mp4",
+    "/video/peace_rotate.mp4"
+  ],
+  "sidebarSections": [
+    { "id": "experience", "label": "Experience" },
+    { "id": "projects", "label": "Projects" },
+    { "id": "open-source", "label": "Open Source" },
+    { "id": "skills", "label": "Skills" },
+    { "id": "blogs", "label": "Blog" }
+  ],
+  "sectionIds": ["experience", "projects", "open-source", "skills", "blogs"],
+  "sectionHeaders": {
+    "experiences": "Experiences",
+    "projects": "Projects",
+    "skills": "Skills",
+    "blogs": "Blogs",
+    "index": "Index"
+  },
+  "socialsSection": {
+    "portfolioLabel": "Here are my socials",
+    "contactLabel": "Find me on my socials"
+  },
+  "viewHeaders": {
+    "contact": { "title": "Contact", "subtitle": "Open for meaningful work." },
+    "projects": { "title": "All Projects", "subtitle": "Full Project Archive" },
+    "pull-requests": { "title": "Pull Requests", "subtitle": "Open Source Contributions" },
+    "blog-post": { "title": "Blog", "subtitle": "Insights & Articles" },
+    "resume": { "title": "Resume", "subtitle": "Ashish Kumar" }
+  },
+  "contactForm": {
+    "nameLabel": "Full Name",
+    "namePlaceholder": "Tyler Durden",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "tyler@projectmayhem.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "You're crazy good, never change.",
+    "successMessage": "✓ Message sent successfully! I will get back to you soon.",
+    "sendingLabel": "Sending...",
+    "sendLabel": "Send Message"
+  },
+  "buttons": {
+    "getInTouch": "Get in touch",
+    "resume": "Resume",
+    "viewAll": "View All ↗",
+    "download": "Download",
+    "viewProject": "View Project ↗"
+  },
+  "resume": {
+    "pdfLabel": "PDF document",
+    "openPdfTooltip": "Open PDF in new tab",
+    "downloadDocxTooltip": "Download Word Doc version",
+    "lookingForAnother": "Looking for another format?",
+    "viewRawText": "View Raw Text version",
+    "pdfPreviewTitle": "Ashish Kumar Resume PDF Preview"
+  },
+  "preloader": {
+    "greetings": ["Hey!", "Hello, World", "loading_modules...", "Welcome"],
+    "version": "System Initialization // V.1.0.8",
+    "logMessages": [
+      { "min": 20, "max": 45, "text": "> LOADING DATA SCIENCE KERNEL..." },
+      { "min": 45, "max": 70, "text": "> SETTING RESUME PARAMETERS..." },
+      { "min": 70, "max": 95, "text": "> RESOLVING BLUEPRINT GRID LAYOUT..." },
+      { "min": 95, "max": 100, "text": "> FINALIZING CORE RENDER..." },
+      { "min": 100, "max": 100, "text": "> SYSTEM ONLINE." }
+    ],
+    "finalLabel": "INITIALIZING"
+  },
+  "footer": {
+    "quote": "Do so much work that it would be unreasonable for you to not be successful.",
+    "author": "ALEX HORMOZI"
+  },
+  "commandMenu": {
+    "githubUrl": "https://github.com/ashishkumar62649"
+  },
+  "techSlugMap": {
+    "typescript": "typescript",
+    "react": "react",
+    "cesiumjs": "cesium",
+    "fastify": "fastify",
+    "postgresql": "postgresql",
+    "postgis": "postgresql",
+    "python": "python",
+    "langgraph": "langchain",
+    "fastapi": "fastapi",
+    "streamlit": "streamlit",
+    "pgvector": "postgresql",
+    "scikit-learn": "scikitlearn",
+    "pandas": "pandas",
+    "numpy": "numpy",
+    "jupyter": "jupyter",
+    "pymupdf": "adobe"
+  }
+}

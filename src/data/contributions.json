@@ -1,0 +1,26 @@
+{
+  "username": "ashishkumar62649",
+  "fallbackTotal": 1482,
+  "defaultCounts": { "merged": 99, "open": 3, "closed": 2 },
+  "mockPRs": {
+    "merged": [
+      { "id": 1, "title": "fix(infra): cap CPU/memory on runtime-compose app services (#298)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 298, "created_at": "2026-07-01" },
+      { "id": 2, "title": "fix(web): announce DataTable sort state with aria-sort/aria-label (#284)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 284, "created_at": "2026-06-25" },
+      { "id": 3, "title": "fix(web): add consistent focus-visible rings to interactive controls", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 283, "created_at": "2026-06-20" },
+      { "id": 4, "title": "fix(go): propagate caller context through the verification flow", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 280, "created_at": "2026-06-15" },
+      { "id": 5, "title": "fix(infra): isolate and clean up Helm validate temp artifacts (#299)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 299, "created_at": "2026-06-10" },
+      { "id": 6, "title": "fix(infra): remove temp pgpass file on migrate exit (#297)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 297, "created_at": "2026-06-05" },
+      { "id": 7, "title": "fix(api): degrade gracefully on unparseable STS responses (#294)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 294, "created_at": "2026-05-28" },
+      { "id": 8, "title": "test(engine): assert dispatcher handler parity with the catalog (#296)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 296, "created_at": "2026-05-20" }
+    ],
+    "open": [
+      { "id": 9, "title": "feat(ai): integrate agentic routing for RFP parser (#305)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 305, "created_at": "2026-07-05" },
+      { "id": 10, "title": "docs(readme): update onboarding pipeline architecture diagram (#302)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 302, "created_at": "2026-07-03" },
+      { "id": 11, "title": "fix(ui): adjust font-sizing on real-time clock overlay", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 301, "created_at": "2026-07-02" }
+    ],
+    "closed": [
+      { "id": 12, "title": "refactor(core): replace legacy state managers with context providers (#281)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 281, "created_at": "2026-06-12" },
+      { "id": 13, "title": "chore(deps): bump vite version to next-gen preview baselines (#278)", "repo": "Garudex-Labs/caracal", "url": "https://github.com", "number": 278, "created_at": "2026-06-01" }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "college": {
+    "name": "Indian Institute of Technology Guwahati",
+    "degree": "BSc (Honors) in Data Science and Artificial Intelligence",
+    "expected": "Expected 2029",
+    "cpi": { "value": "8.93 / 10", "note": "After Trimester II" },
+    "trimesterGrades": ["Trimester I: 8.36", "Trimester II: 9.54"],
+    "status": { "label": "Trimester III", "note": "Ongoing (Ends July 2026)" },
+    "studyAreas": ["Python Programming", "Data Science", "Artificial Intelligence", "Statistics", "Databases", "Machine Learning", "Data Analysis"]
+  },
+  "school": [
+    { "label": "Class 12 Education", "year": "2021", "score": "85.7%" },
+    { "label": "Class 10 Education", "year": "2019", "score": "72.0%" }
+  ],
+  "certifications": [
+    { "name": "OpenAI Certificate", "description": "Credentials in designing LLM-based agent configurations, system prompt workflows, and structured schemas." },
+    { "name": "Claude Certificate", "description": "Focusing on Claude XML schema styling, prompt optimization, tool calling, and API integration flows." },
+    { "name": "Coursera & Google Badges", "description": "Recognized accomplishments in Machine Learning models, Anomaly Detection, Feature Engineering, and Python Data Science." }
+  ]
+}

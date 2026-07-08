@@ -1,0 +1,17 @@
+[
+  {
+    "slug": "building-premium-portfolio",
+    "title": "Building a Premium Software Engineer Portfolio: Architecture, Custom Themes, & COM PDF Pipelines",
+    "date": "Jul 2026",
+    "reads": 242,
+    "tags": ["React", "Vite", "Tailwind", "COM Pipeline"]
+  },
+  {
+    "slug": "anomaly-detection",
+    "title": "Anomaly Detection in BDG2 Building Meters using Unsupervised Models",
+    "date": "Jan 2026",
+    "reads": 142,
+    "tags": ["Anomaly Detection", "scikit-learn", "Python"],
+    "url": "https://github.com/ashishkumar62649/building-energy-anomaly-detection"
+  }
+]

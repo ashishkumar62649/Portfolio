@@ -1,0 +1,21 @@
+{
+  "name": "Ashish Kumar",
+  "tagline": "AI & Data Science @ IIT Guwahati",
+  "bio": [
+    "I'm an AI & Data Science undergraduate at IIT Guwahati who designs intelligent systems, agentic workflows, and data-driven products. My work combines machine learning, APIs, RAG, and full-stack engineering with a strong foundation in mathematics, physics, and structured problem solving."
+  ],
+  "bioHighlights": [
+    { "text": "Experienced with scikit-learn, LangGraph, LangChain, REST APIs, LLM workflows, and RAG/agent design." },
+    { "text": "Built anomaly detection systems for commercial building meter data." },
+    { "text": "Designing full-stack AI systems like god-eyes, AI-Codebase-Onboarding-Agent, and AI-RFP-Proposal-Generative-Agent.", "bold": true }
+  ],
+  "avatar": "/images/avatar.png",
+  "githubUsername": "ashishkumar62649",
+  "email": "ashishkumar62649@gmail.com",
+  "resume": {
+    "pdf": "/Ashish_Kumar_Resume.pdf",
+    "docx": "/Ashish_Kumar_Resume.docx",
+    "txt": "/resume_text.txt",
+    "label": "Ashish Kumar Resume"
+  }
+}

@@ -1,0 +1,21 @@
+[
+  {
+    "company": "Evoastra",
+    "role": "Data Scientist Intern",
+    "term": "Dec 2025 - Jan 2026",
+    "location": "Remote",
+    "logo": "EV",
+    "stats": [
+      { "value": "Isolation Forest", "label": "Baseline Model" },
+      { "value": "Local Outlier", "label": "LOF Detection" },
+      { "value": "Jupyter", "label": "Model Notebooks" },
+      { "value": "GitHub", "label": "Project Workflow" }
+    ],
+    "bullets": [
+      "Built an unsupervised anomaly detection pipeline to identify unusual building energy consumption patterns from meter data.",
+      "Cleaned and transformed data, handled missing values, engineered features, and prepared reproducible model-training notebooks.",
+      "Trained and compared Isolation Forest and Local Outlier Factor baselines; documented code, results, and project workflow on GitHub."
+    ],
+    "tags": ["Python", "Pandas", "NumPy", "scikit-learn", "Anomaly Detection", "Feature Engineering", "Isolation Forest", "Local Outlier Factor", "Jupyter", "GitHub"]
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "title": "god-eyes",
+    "status": "Live",
+    "description": "A full-stack geospatial intelligence prototype with 8 live data layers (aviation, maritime, satellites, weather, earthquakes, borders, energy, and news) on a CesiumJS 3D globe.",
+    "githubUrl": "https://github.com/ashishkumar62649/god-eyes",
+    "previewColor": "from-amber-600/20 to-orange-900/20",
+    "technologies": ["TypeScript", "React", "CesiumJS", "Fastify", "PostgreSQL", "PostGIS"]
+  },
+  {
+    "title": "AI-Codebase-Onboarding-Agent",
+    "status": "Building",
+    "description": "A code-aware RAG assistant that indexes repositories, extracts symbols/routes, chunks functions, and answers debugging and impact-analysis questions with file-level evidence.",
+    "githubUrl": "https://github.com/ashishkumar62649/AI-Codebase-Onboarding-Agent",
+    "previewColor": "from-blue-600/20 to-indigo-900/20",
+    "technologies": ["Python", "LangGraph", "FastAPI", "Streamlit", "pgvector"]
+  },
+  {
+    "title": "AI-Research-Paper-to-Prototype-Agent",
+    "status": "Building",
+    "description": "An agentic RAG workflow that parses AI/ML papers into method breakdowns, implementation roadmaps, starter code structure, and reproducibility reports.",
+    "githubUrl": "https://github.com/ashishkumar62649/AI-Research-Paper-to-Prototype-Agent",
+    "previewColor": "from-purple-600/20 to-pink-900/20",
+    "technologies": ["Python", "LangGraph", "FastAPI", "Streamlit", "PyMuPDF"]
+  },
+  {
+    "title": "AI-RFP-Proposal-Generative-Agent",
+    "status": "Building",
+    "description": "An RFP/tender analysis agent to extract requirements, retrieve company evidence, score compliance, identify risks, and generate proposal drafts.",
+    "githubUrl": "https://github.com/ashishkumar62649/AI-RFP-Proposal-Generative-Agent",
+    "previewColor": "from-emerald-600/20 to-teal-900/20",
+    "technologies": ["Python", "LangGraph", "FastAPI", "Streamlit", "pgvector"]
+  },
+  {
+    "title": "building-energy-anomaly-detection",
+    "status": "Live",
+    "description": "Unsupervised ML pipeline detecting energy anomalies in commercial buildings using Isolation Forest, LOF, and Elliptic Envelope on the BDG2 dataset with rolling statistical features.",
+    "githubUrl": "https://github.com/ashishkumar62649/building-energy-anomaly-detection",
+    "previewColor": "from-rose-600/20 to-red-900/20",
+    "technologies": ["Python", "scikit-learn", "Pandas", "NumPy", "Jupyter"]
+  }
+]
