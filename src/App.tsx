@@ -18,6 +18,7 @@ import BlogPost from "./components/BlogPost";
 import { ImageTrail } from "./components/ui/image-trail";
 import { trailImages } from "./components/trail-images";
 import Preloader from "./components/Preloader";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Component for structural dotted section grids
 const SectionDivider = ({ position = "top" }: { position?: "top" | "bottom" }) => {
@@ -942,6 +943,7 @@ export default function App() {
       />
 
     </ImageTrail>
+    <SpeedInsights />
     </>
   );
 }
