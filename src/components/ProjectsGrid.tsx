@@ -2,20 +2,31 @@ import { Play } from "lucide-react";
 import projectsData from "../data/projects.json";
 import config from "../data/config.json";
 import type { ProjectItem } from "../data/types";
+import { highlightKeywords } from "../utils/text";
 
 const techSlugMap: Record<string, string> = config.techSlugMap;
 const projects: ProjectItem[] = projectsData as ProjectItem[];
 
-export function TechIcons({ technologies, theme }: { technologies: string[]; theme: string }) {
-  const getIconColor = () => {
-    if (theme === "cyberpunk") return "d946ef";
-    if (theme === "retro") return "22c55e";
-    if (theme === "ibm") return "0f62fe";
-    if (theme === "light") return "18181b";
-    if (theme === "dark") return "e4e4e7";
-    return "71717a";
-  };
+const techColors: Record<string, string> = {
+  typescript: "3178c6",
+  react: "61dafb",
+  cesium: "002a4d",
+  fastify: "000000",
+  postgresql: "4169e1",
+  python: "3776ab",
+  langchain: "1c3c3a",
+  fastapi: "009688",
+  streamlit: "ff4b4b",
+  scikitlearn: "f7931e",
+  pandas: "150458",
+  numpy: "013243",
+  jupyter: "f37626",
+  adobe: "ff0000",
+  microsoftexcel: "107c41",
+  powerbi: "f2c811"
+};
 
+export function TechIcons({ technologies, theme }: { technologies: string[]; theme: string }) {
   const slugsList: string[] = [];
   technologies.forEach((tech) => {
     const slug = techSlugMap[tech.toLowerCase()] || null;
@@ -24,15 +35,27 @@ export function TechIcons({ technologies, theme }: { technologies: string[]; the
     }
   });
 
+  const getIconUrl = (slug: string) => {
+    if (slug === "microsoftexcel" || slug === "powerbi") {
+      return `/icons/${slug}.svg`;
+    }
+    // Contrast overrides for dark mode
+    if (slug === "fastify" || slug === "cesium" || slug === "langchain" || slug === "nextdotjs" || slug === "github") {
+      return `https://cdn.simpleicons.org/${slug}/${theme === "light" ? "000000" : "ffffff"}`;
+    }
+    const color = techColors[slug] || "71717a";
+    return `https://cdn.simpleicons.org/${slug}/${color}`;
+  };
+
   return (
     <div className="flex items-center gap-2">
       {slugsList.map((slug) => (
         <img 
           key={slug} 
-          src={`https://cdn.simpleicons.org/${slug}/${getIconColor()}`} 
+          src={getIconUrl(slug)} 
           alt={slug} 
           title={slug}
-          className="w-3.5 h-3.5 opacity-80 hover:opacity-100 transition-opacity" 
+          className="w-3.5 h-3.5 opacity-90 hover:opacity-100 transition-opacity object-contain" 
         />
       ))}
     </div>
@@ -81,7 +104,7 @@ export default function ProjectsGrid({ theme }: ProjectsGridProps) {
           {/* Details */}
           <div className="mt-4 flex flex-col px-0.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
-              <h3 className="text-[15px] font-bold text-[var(--text-primary)] leading-tight">
+              <h3 className="text-[17px] font-black text-[var(--text-primary)] tracking-tight leading-tight group-hover:underline decoration-2 decoration-[var(--text-primary)] underline-offset-4">
                 {proj.title}
               </h3>
               
@@ -99,7 +122,7 @@ export default function ProjectsGrid({ theme }: ProjectsGridProps) {
 
             {/* Description */}
             <p className="mt-2 text-[13px] text-[var(--text-secondary)] leading-relaxed pr-2">
-              {proj.description}
+              {highlightKeywords(proj.description)}
             </p>
 
             {/* Bottom Actions */}

@@ -15,9 +15,12 @@ import GithubGraph from "./components/GithubGraph";
 import OpenSourceContributions from "./components/OpenSourceContributions";
 import BlogList from "./components/BlogList";
 import BlogPost from "./components/BlogPost";
+import QuotesCarousel from "./components/QuotesCarousel";
 import { ImageTrail } from "./components/ui/image-trail";
 import { trailImages } from "./components/trail-images";
 import Preloader from "./components/Preloader";
+import { highlightKeywords } from "./utils/text";
+import SocialHoverCard from "./components/SocialHoverCard";
 
 // Component for structural dotted section grids
 const SectionDivider = ({ position = "top" }: { position?: "top" | "bottom" }) => {
@@ -70,23 +73,60 @@ export default function App() {
   const [showPreloader, setShowPreloader] = useState(true);
   const [view, setView] = useState<"portfolio" | "contact" | "resume" | "projects" | "pull-requests" | "blog-post">("portfolio");
   const [activeBlogSlug, setActiveBlogSlug] = useState<string | null>(null);
+  const [sessionTrailImages, setSessionTrailImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [submitStatus, setSubmitStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [isAtTop, setIsAtTop] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsAtTop(window.scrollY < 120);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Run once on load
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
     setSubmitStatus("sending");
-    setTimeout(() => {
-      setSubmitStatus("success");
-      setFormData({ name: "", email: "", message: "" });
-      setTimeout(() => setSubmitStatus("idle"), 4000);
-    }, 1200);
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/ashishkumar62649@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _subject: `New Portfolio Message from ${formData.name}`
+        })
+      });
+      if (response.ok) {
+        setSubmitStatus("success");
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setSubmitStatus("idle"), 5000);
+      } else {
+        throw new Error("FormSubmit submission response failed");
+      }
+    } catch (err) {
+      console.error("Failed to send message via FormSubmit:", err);
+      setSubmitStatus("error");
+      setTimeout(() => setSubmitStatus("idle"), 5000);
+    }
   };
 
-  // Select a random video index on component mount
+  // Select a random video index and subset of 15 trail images on component mount
   useEffect(() => {
     setVideoIndex(Math.floor(Math.random() * videos.length));
+    
+    // Choose 15 random images from the pool of 287 to avoid heavy parallel fetching
+    const shuffled = [...trailImages].sort(() => 0.5 - Math.random());
+    setSessionTrailImages(shuffled.slice(0, 15));
   }, []);
 
   const handleNextVideo = () => {
@@ -151,12 +191,7 @@ export default function App() {
     setTheme(themes[nextIdx]);
   };
 
-  const getIconColor = () => {
-    if (theme === "cyberpunk") return "d946ef";
-    if (theme === "retro") return "22c55e";
-    if (theme === "ibm") return "0f62fe";
-    return "71717a";
-  };
+
 
   // Hook command palette shortcut keys
   useEffect(() => {
@@ -244,7 +279,43 @@ export default function App() {
     };
   }, []);
 
-
+  // Dynamic browser tab title manager
+  useEffect(() => {
+    let title = "Ashish Kumar";
+    
+    if (view === "resume") {
+      title = "Ashish Kumar | Resume";
+    } else if (view === "contact") {
+      title = "Ashish Kumar | Contact";
+    } else if (view === "projects") {
+      title = "Ashish Kumar | Projects";
+    } else if (view === "pull-requests") {
+      title = "Ashish Kumar | Open Source";
+    } else if (view === "blog-post") {
+      title = "Ashish Kumar | Blog";
+    } else {
+      // If we are at the top of the landing page, show just "Ashish Kumar"
+      if (isAtTop) {
+        title = "Ashish Kumar";
+      } else {
+        if (activeSection === "experience") {
+          title = "Ashish Kumar | Experience";
+        } else if (activeSection === "projects") {
+          title = "Ashish Kumar | Projects";
+        } else if (activeSection === "open-source") {
+          title = "Ashish Kumar | Open Source";
+        } else if (activeSection === "skills") {
+          title = "Ashish Kumar | Skills";
+        } else if (activeSection === "blogs") {
+          title = "Ashish Kumar | Blogs";
+        } else {
+          title = "Ashish Kumar | Portfolio";
+        }
+      }
+    }
+    
+    document.title = title;
+  }, [view, activeSection, isAtTop]);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -266,7 +337,7 @@ export default function App() {
       </AnimatePresence>
 
       <ImageTrail
-      images={trailImages}
+      images={sessionTrailImages}
       threshold={50}
       minDelay={30}
       duration={1000}
@@ -382,9 +453,9 @@ export default function App() {
               <video
                 src={videos[videoIndex]}
                 autoPlay
-                loop
                 muted
                 playsInline
+                onEnded={handleNextVideo}
                 className="w-full h-full object-cover pointer-events-none"
               />
             </motion.div>
@@ -446,26 +517,15 @@ export default function App() {
               </div>
               
               <div className="flex flex-col justify-center pt-8 text-left">
-                <h1 className="text-[20px] sm:text-[24px] font-bold text-[var(--text-primary)] tracking-tight leading-none mb-0.5 [text-shadow:-1.5px_0_0_rgba(0,200,255,0.3),1.5px_0_0_rgba(255,80,0,0.3)] dark:[text-shadow:-1.5px_0_0_rgba(0,200,255,0.6),1.5px_0_0_rgba(255,80,0,0.6)]">
+                <h1 className="text-[24px] sm:text-[28px] font-black text-[var(--text-primary)] tracking-tight leading-none mb-1.5 [text-shadow:-1.5px_0_0_rgba(0,200,255,0.3),1.5px_0_0_rgba(255,80,0,0.3)] dark:[text-shadow:-1.5px_0_0_rgba(0,200,255,0.6),1.5px_0_0_rgba(255,80,0,0.6)]">
                   {profileData.name}
                 </h1>
-                <p className="text-[13px] sm:text-[14px] text-[var(--text-secondary)]">{profileData.tagline}</p>
+                <p className="text-[13px] sm:text-[14px] font-semibold text-[var(--text-secondary)]">{profileData.tagline}</p>
               </div>
             </div>
 
-            {/* Theme toggler and Command menu activator */}
+            {/* Theme toggler */}
             <div className="flex items-center justify-end gap-3 sm:gap-4 shrink-0">
-              <button 
-                onClick={() => setIsCommandMenuOpen(true)}
-                className="relative group cursor-pointer transition-all duration-300 active:scale-95"
-              >
-                <div className="absolute -inset-[4.5px] border border-[var(--border-color)] rounded-[9px] pointer-events-none transition-colors duration-300 group-hover:border-[var(--border-color)] dark:group-hover:border-white/10" />
-                <div className="relative flex items-center gap-1.5 px-3 py-1 bg-[var(--badge-bg)] hover:bg-[var(--card-hover-bg)] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 rounded-[5px] text-[11px] font-medium transition-all duration-300 border border-[var(--border-color)] shadow-sm shadow-black/20 dark:shadow-lg dark:shadow-black/80 font-mono">
-                  <span className="leading-none mt-[0.5px]">⌘</span>
-                  <span className="leading-none mt-[0.5px]">K</span>
-                </div>
-              </button>
-              
               <button 
                 onClick={cycleTheme}
                 className="flex items-center gap-1.5 p-1 text-[var(--text-primary)] hover:opacity-80 transition-opacity cursor-pointer"
@@ -510,13 +570,13 @@ export default function App() {
           <>
             {/* Intro bio sentences */}
             <p className="text-[14px] sm:text-[15px] text-[var(--text-secondary)] leading-relaxed mt-4 text-left">
-              {profileData.bio[0]}
+              {highlightKeywords(profileData.bio[0])}
             </p>
             <ul className="text-[14px] sm:text-[15px] text-[var(--text-secondary)] leading-relaxed mt-4 pl-4 text-left space-y-1">
               {profileData.bioHighlights.map((item, i) => (
                 <li key={i} className="flex gap-1.5">
                   <span>•</span>
-                  <span>{item.text}</span>
+                  <span>{highlightKeywords(item.text)}</span>
                 </li>
               ))}
             </ul>
@@ -559,23 +619,24 @@ export default function App() {
               </h2>
               <div className="flex flex-wrap gap-2">
                 {getSocialsList(theme).map((social) => (
-                  <a 
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative block rounded-[4px] px-3 py-1.5 text-[12px] text-neutral-900 dark:text-neutral-300"
-                  >
-                    <span aria-hidden="true" className="absolute inset-0 rounded-[4px] overflow-hidden transition-colors duration-200 bg-[var(--badge-bg)] hover:bg-[var(--card-hover-bg)] border border-[var(--border-color)]" />
-                    <span className="relative flex items-center gap-1.5 opacity-75 group-hover:opacity-100 transition-opacity duration-300 font-semibold">
-                      {social.hasCustomIcon ? (
-                        <LinkedinIcon className="w-3.5 h-3.5 text-[#0a66c2] group-hover:scale-110 transition-transform duration-200" />
-                      ) : (
-                        <img src={`https://cdn.simpleicons.org/${social.slug}/${social.brandColor}`} alt="" className="w-3.5 h-3.5 opacity-90 group-hover:scale-110 transition-all duration-200" />
-                      )}
-                      {social.name}
-                    </span>
-                  </a>
+                  <SocialHoverCard key={social.name} platform={social.slug}>
+                    <a 
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative block rounded-[4px] px-3 py-1.5 text-[12px] text-neutral-900 dark:text-neutral-300"
+                    >
+                      <span aria-hidden="true" className="absolute inset-0 rounded-[4px] overflow-hidden transition-colors duration-200 bg-[var(--badge-bg)] hover:bg-[var(--card-hover-bg)] border border-[var(--border-color)]" />
+                      <span className="relative flex items-center gap-1.5 opacity-75 group-hover:opacity-100 transition-opacity duration-300 font-semibold">
+                        {social.hasCustomIcon ? (
+                          <LinkedinIcon className="w-3.5 h-3.5 text-[#0a66c2] group-hover:scale-110 transition-transform duration-200" />
+                        ) : (
+                          <img src={`https://cdn.simpleicons.org/${social.slug}/${social.brandColor}`} alt="" className="w-3.5 h-3.5 opacity-90 group-hover:scale-110 transition-all duration-200" />
+                        )}
+                        {social.name}
+                      </span>
+                    </a>
+                  </SocialHoverCard>
                 ))}
               </div>
             </div>
@@ -583,7 +644,8 @@ export default function App() {
             {/* 6. EXPERIENCES SECTION */}
             <section id="experience" className="mt-16 text-left relative pt-12">
               <SectionDivider position="top" />
-              <h2 className="text-[10px] font-mono tracking-[0.2em] text-[var(--text-muted)] uppercase mb-6">
+              <h2 className="text-[13px] font-mono font-extrabold tracking-[0.25em] text-[var(--text-primary)] uppercase mb-6 flex items-center gap-1.5">
+                <span className="w-1.5 h-3 bg-[var(--text-primary)] inline-block rounded-[1px]" />
                 {configData.sectionHeaders.experiences}
               </h2>
               <ExperienceList />
@@ -592,7 +654,8 @@ export default function App() {
             {/* 7. PROJECTS SECTION */}
             <section id="projects" className="mt-16 text-left relative pt-12">
               <SectionDivider position="top" />
-              <h2 className="text-[10px] font-mono tracking-[0.2em] text-[var(--text-muted)] uppercase mb-6">
+              <h2 className="text-[13px] font-mono font-extrabold tracking-[0.25em] text-[var(--text-primary)] uppercase mb-6 flex items-center gap-1.5">
+                <span className="w-1.5 h-3 bg-[var(--text-primary)] inline-block rounded-[1px]" />
                 {configData.sectionHeaders.projects}
               </h2>
               <ProjectsGrid theme={theme} />
@@ -623,7 +686,8 @@ export default function App() {
             {/* 9. SKILLS HEATMAP SECTION */}
             <section id="skills" className="mt-16 text-left relative pt-12">
               <SectionDivider position="top" />
-              <h2 className="text-[10px] font-mono tracking-[0.2em] text-[var(--text-muted)] uppercase mb-6">
+              <h2 className="text-[13px] font-mono font-extrabold tracking-[0.25em] text-[var(--text-primary)] uppercase mb-6 flex items-center gap-1.5">
+                <span className="w-1.5 h-3 bg-[var(--text-primary)] inline-block rounded-[1px]" />
                 {configData.sectionHeaders.skills}
               </h2>
               <div className="flex flex-wrap gap-2 pt-2">
@@ -632,7 +696,19 @@ export default function App() {
                     key={skill.name}
                     className="flex items-center gap-1.5 px-3 py-1 bg-[var(--badge-bg)] border border-[var(--border-color)] rounded-[4px] text-[12px] font-mono text-[var(--text-primary)] shadow-sm"
                   >
-                    <img src={`https://cdn.simpleicons.org/${skill.slug}/${getIconColor()}`} alt="" className="w-3 h-3 opacity-80" />
+                    <img 
+                      src={
+                        (skill.slug === "microsoftexcel" || skill.slug === "powerbi")
+                          ? `/icons/${skill.slug}.svg`
+                          : `https://cdn.simpleicons.org/${skill.slug}/${
+                              (skill.slug === "nextdotjs" || skill.slug === "github")
+                                ? (theme === "light" ? "000000" : "ffffff")
+                                : skill.color
+                            }`
+                      }
+                      alt="" 
+                      className="w-3.5 h-3.5 object-contain" 
+                    />
                     {skill.name}
                   </div>
                 ))}
@@ -644,7 +720,8 @@ export default function App() {
             {/* 11. BLOG FEEDS SECTION */}
             <section id="blogs" className="mt-16 text-left relative pt-12 mb-8">
               <SectionDivider position="top" />
-              <h2 className="text-[10px] font-mono tracking-[0.2em] text-[var(--text-muted)] uppercase mb-6">
+              <h2 className="text-[13px] font-mono font-extrabold tracking-[0.25em] text-[var(--text-primary)] uppercase mb-6 flex items-center gap-1.5">
+                <span className="w-1.5 h-3 bg-[var(--text-primary)] inline-block rounded-[1px]" />
                 {configData.sectionHeaders.blogs}
               </h2>
               <BlogList onSelectBlog={(slug) => {
@@ -654,15 +731,10 @@ export default function App() {
               }} />
             </section>
 
-            {/* 12. FOOTER ALEX HORMOZI QUOTE */}
+            {/* 12. FOOTER QUOTE CAROUSEL */}
             <footer className="mt-16 relative pt-12 text-center flex flex-col items-center">
               <SectionDivider position="top" />
-              <blockquote className="text-[15px] italic text-[var(--text-muted)] max-w-md font-serif leading-relaxed">
-                &ldquo;{configData.footer.quote}&rdquo;
-              </blockquote>
-              <cite className="text-[10px] tracking-[0.2em] font-mono uppercase text-[var(--text-muted)] mt-2 block not-italic">
-                {configData.footer.author}
-              </cite>
+              <QuotesCarousel />
             </footer>
           </>
         )}
@@ -724,6 +796,12 @@ export default function App() {
                 </div>
               )}
 
+              {submitStatus === "error" && (
+                <div className="mt-4 p-3 rounded bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-mono">
+                  Failed to send message. Please try again or email directly.
+                </div>
+              )}
+
               {/* Submit Button */}
               <button 
                 type="submit"
@@ -741,23 +819,24 @@ export default function App() {
               </h2>
               <div className="flex flex-wrap gap-2">
                 {getSocialsList(theme).map((social) => (
-                  <a 
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative block rounded-[4px] px-3 py-1.5 text-[12px]"
-                  >
-                    <span aria-hidden="true" className="absolute inset-0 rounded-[4px] overflow-hidden transition-colors duration-200 bg-[var(--badge-bg)] hover:bg-[var(--card-hover-bg)] border border-[var(--border-color)]" />
-                    <span className="relative flex items-center gap-1.5 opacity-75 group-hover:opacity-100 transition-opacity duration-300 font-semibold text-[var(--text-primary)]">
-                      {social.hasCustomIcon ? (
-                        <LinkedinIcon className="w-3.5 h-3.5 text-[#0a66c2] mr-1.5" />
-                      ) : (
-                        <img src={`https://cdn.simpleicons.org/${social.slug}/${social.brandColor}`} alt="" className="w-3.5 h-3.5 opacity-90 mr-1.5" />
-                      )}
-                      {social.name}
-                    </span>
-                  </a>
+                  <SocialHoverCard key={social.name} platform={social.slug}>
+                    <a 
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative block rounded-[4px] px-3 py-1.5 text-[12px]"
+                    >
+                      <span aria-hidden="true" className="absolute inset-0 rounded-[4px] overflow-hidden transition-colors duration-200 bg-[var(--badge-bg)] hover:bg-[var(--card-hover-bg)] border border-[var(--border-color)]" />
+                      <span className="relative flex items-center gap-1.5 opacity-75 group-hover:opacity-100 transition-opacity duration-300 font-semibold text-[var(--text-primary)]">
+                        {social.hasCustomIcon ? (
+                          <LinkedinIcon className="w-3.5 h-3.5 text-[#0a66c2] mr-1.5" />
+                        ) : (
+                          <img src={`https://cdn.simpleicons.org/${social.slug}/${social.brandColor}`} alt="" className="w-3.5 h-3.5 opacity-90 mr-1.5" />
+                        )}
+                        {social.name}
+                      </span>
+                    </a>
+                  </SocialHoverCard>
                 ))}
               </div>
             </div>

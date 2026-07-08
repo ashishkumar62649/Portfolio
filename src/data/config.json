@@ -63,7 +63,7 @@
   },
   "preloader": {
     "greetings": ["Hey!", "Hello, World", "loading_modules...", "Welcome"],
-    "version": "System Initialization // V.1.0.8",
+    "version": "System Initialization // V.1.0.9",
     "logMessages": [
       { "min": 20, "max": 45, "text": "> LOADING DATA SCIENCE KERNEL..." },
       { "min": 45, "max": 70, "text": "> SETTING RESUME PARAMETERS..." },

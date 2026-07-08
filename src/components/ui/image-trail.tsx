@@ -98,11 +98,17 @@ export function ImageTrail({
       }
 
       const w = window.innerWidth;
-      const clientX = event.clientX;
       const isDesktop = w >= 768;
 
+      // Disable entirely on mobile/tablet
+      if (!isDesktop) {
+        return;
+      }
+
+      const clientX = event.clientX;
+
       // Filter: Only allow trail cursor animations on the left and right empty spaces on desktop
-      if (isDesktop && clientX >= w * 0.3 && clientX <= w * 0.7) {
+      if (clientX >= w * 0.3 && clientX <= w * 0.8) {
         lastPositionRef.current = null;
         return;
       }

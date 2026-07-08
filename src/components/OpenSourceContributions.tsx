@@ -94,7 +94,8 @@ export default function OpenSourceContributions({ isFullArchive = false, setView
       {/* Title block & Filter tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         {!isFullArchive && (
-          <h2 className="text-[14px] font-bold text-[var(--text-primary)] leading-tight">
+          <h2 className="text-[13px] font-mono font-extrabold tracking-[0.25em] text-[var(--text-primary)] uppercase flex items-center gap-1.5">
+            <span className="w-1.5 h-3 bg-[var(--text-primary)] inline-block rounded-[1px]" />
             Open Source Contributions
           </h2>
         )}

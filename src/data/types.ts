@@ -22,6 +22,7 @@ export interface ExperienceItem {
 export interface SkillItem {
   name: string;
   slug: string;
+  color: string;
 }
 
 export interface SocialItem {

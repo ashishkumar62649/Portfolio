@@ -9,8 +9,20 @@ interface PreloaderProps {
 export default function Preloader({ onComplete }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [greetingIndex, setGreetingIndex] = useState(0);
+  const [pageLoaded, setPageLoaded] = useState(false);
   
   const greetings = config.preloader.greetings;
+
+  // Track actual document load state
+  useEffect(() => {
+    if (document.readyState === "complete") {
+      setPageLoaded(true);
+    } else {
+      const handleLoad = () => setPageLoaded(true);
+      window.addEventListener("load", handleLoad);
+      return () => window.removeEventListener("load", handleLoad);
+    }
+  }, []);
 
   useEffect(() => {
     // Organic steps for the progress percentage loader
@@ -20,23 +32,21 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           clearInterval(interval);
           return 100;
         }
+
+        // Cap loading progress at 90% until window is completely loaded
+        if (prev >= 90 && !pageLoaded) {
+          return 90;
+        }
+
         const diff = Math.floor(Math.random() * 12) + 6;
         return Math.min(prev + diff, 100);
       });
     }, 150);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [pageLoaded]);
 
-  useEffect(() => {
-    // Complete the loading screen after a short presentation delay at 100%
-    if (progress === 100) {
-      const timeout = setTimeout(() => {
-        onComplete();
-      }, 700);
-      return () => clearTimeout(timeout);
-    }
-  }, [progress, onComplete]);
+
 
   useEffect(() => {
     // Switch greeting tags based on progress percentage
@@ -94,24 +104,65 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             </span>
           )}
         </div>
+
+        {/* Enter Button inside the Middle Section (Centrally positioned) */}
+        <AnimatePresence>
+          {progress === 100 && (
+            <motion.button
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ 
+                opacity: 1, 
+                y: 0,
+                scale: [1, 1.03, 1]
+              }}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{
+                opacity: { duration: 0.4 },
+                y: { type: "spring", stiffness: 200, damping: 14 },
+                scale: { repeat: Infinity, duration: 2.2, ease: "easeInOut" }
+              }}
+              onClick={() => {
+                const clickAudio = new Audio("/button.mp3");
+                clickAudio.volume = 0.45;
+                clickAudio.play().catch(() => {});
+                onComplete();
+              }}
+              className="mt-6 px-8 py-2.5 border border-[var(--border-color)] rounded-[6px] text-[10px] font-mono font-bold tracking-[0.2em] uppercase bg-[var(--badge-bg)] hover:bg-[var(--card-hover-bg)] text-[var(--text-primary)] cursor-pointer shadow-md hover:shadow-lg dark:hover:shadow-white/5 active:scale-95 transition-all duration-300"
+            >
+              Enter Portfolio
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Bottom section: Loading Progress indicator */}
-      <div className="w-[85%] max-w-[360px] flex flex-col gap-3 items-center">
-        {/* Sleek industrial loading progress bar */}
-        <div className="w-full h-[6px] border border-[var(--border-color)] rounded-[3px] overflow-hidden p-[1px] bg-neutral-900/10 dark:bg-black/40">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ ease: "easeOut", duration: 0.15 }}
-            className="h-full bg-[var(--text-primary)] rounded-[2px]"
-          />
-        </div>
+      <div className="w-[85%] max-w-[360px] min-h-[52px] flex items-center justify-center">
+        <AnimatePresence>
+          {progress < 100 && (
+            <motion.div 
+              initial={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="w-full flex flex-col gap-3 items-center"
+            >
+              {/* Sleek industrial loading progress bar */}
+              <div className="w-full h-[6px] border border-[var(--border-color)] rounded-[3px] overflow-hidden p-[1px] bg-neutral-900/10 dark:bg-black/40">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ ease: "easeOut", duration: 0.15 }}
+                  className="h-full bg-[var(--text-primary)] rounded-[2px]"
+                />
+              </div>
 
-        <div className="flex justify-between w-full text-[10px] tracking-widest opacity-60 font-semibold">
-          <span>{config.preloader.finalLabel}</span>
-          <span>{progress}%</span>
-        </div>
+              <div className="flex justify-between w-full text-[10px] tracking-widest opacity-60 font-semibold">
+                <span>{config.preloader.finalLabel}</span>
+                <span>{progress}%</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );

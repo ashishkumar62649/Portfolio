@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import experiencesData from "../data/experience.json";
 import type { ExperienceItem } from "../data/types";
+import { highlightKeywords } from "../utils/text";
 
 const experiences: ExperienceItem[] = experiencesData;
 
@@ -47,11 +48,11 @@ export default function ExperienceList() {
 
                 <div className="flex flex-col gap-0.5 min-w-0 pr-2 sm:pr-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[14px] font-bold leading-tight text-[var(--text-primary)] sm:text-[16px]">
+                    <span className="text-[16px] sm:text-[18px] font-black leading-tight text-[var(--text-primary)] tracking-tight">
                       {exp.company}
                     </span>
                   </div>
-                  <span className="text-[13px] sm:text-[14px] text-[var(--text-secondary)] truncate">
+                  <span className="text-[14px] sm:text-[15px] font-bold text-[var(--text-primary)] opacity-85 truncate">
                     {exp.role}
                   </span>
                 </div>
@@ -123,7 +124,7 @@ export default function ExperienceList() {
                       {exp.bullets.map((bullet, bIdx) => (
                         <li key={bIdx} className="flex items-start gap-2">
                           <span className="text-[var(--text-muted)] mt-[2px] select-none">&bull;</span>
-                          <span>{bullet}</span>
+                          <span>{highlightKeywords(bullet)}</span>
                         </li>
                       ))}
                     </ul>
