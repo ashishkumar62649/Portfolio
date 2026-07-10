@@ -64,7 +64,6 @@ export default function GithubGraph() {
     // 2. Fetch real dynamic contributions from GitHub profile
     const fetchContributions = async () => {
       try {
-        const username = profileData.githubUsername;
         const res = await fetch("/api/github/activity");
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
