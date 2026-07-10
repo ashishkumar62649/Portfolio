@@ -84,7 +84,7 @@ const getSocialsList = (theme: string) =>
 type Theme = "dark" | "light" | "cyberpunk" | "retro" | "ibm";
 
 export default function App() {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
   const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("experience");
   const [videoIndex, setVideoIndex] = useState(0);
@@ -191,7 +191,7 @@ export default function App() {
   }, [theme]);
 
   const cycleTheme = () => {
-    const themes: Theme[] = ["dark", "light", "cyberpunk", "retro", "ibm"];
+    const themes: Theme[] = ["light", "dark", "cyberpunk", "retro", "ibm"];
     const nextIdx = (themes.indexOf(theme) + 1) % themes.length;
     setTheme(themes[nextIdx]);
   };

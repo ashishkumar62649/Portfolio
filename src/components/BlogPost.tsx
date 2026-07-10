@@ -61,7 +61,7 @@ export default function BlogPost({ slug }: BlogPostProps) {
           2. The Multi-Theme CSS Variable Pipeline
         </h2>
         <p>
-          A central feature is the interactive theme cycler. Rather than relying on simple dark/light toggles, the system manages a 5-way theme rotation (Default Dark, Light, Cyberpunk, Retro, and IBM Cobalt).
+          A central feature is the interactive theme cycler. Rather than relying on simple dark/light toggles, the system manages a 5-way theme rotation (Default Light, Dark, Cyberpunk, Retro, and IBM Cobalt).
         </p>
         <p>
           This is implemented by declaring root CSS variables and mapping them to dynamic theme attributes injected onto the <code>&lt;body&gt;</code> element:
