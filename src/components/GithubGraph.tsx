@@ -65,9 +65,19 @@ export default function GithubGraph() {
     const fetchContributions = async () => {
       try {
         const username = profileData.githubUsername;
-        const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}`);
+        const res = await fetch("/api/github/activity");
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
+
+        if (data.weeks && data.totalContributions !== undefined) {
+          const weeks = data.weeks.map((week: any) => week.contributionDays.map((day: any) => ({
+            date: day.date,
+            count: day.contributionCount,
+          })));
+          setGridData(weeks);
+          setTotalCommits(data.totalContributions);
+          return;
+        }
 
         if (data && data.contributions) {
           // Filter exclusively for year 2026

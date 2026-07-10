@@ -36,36 +36,15 @@ export default function OpenSourceContributions({ isFullArchive = false, setView
 
     setLoading(prev => ({ ...prev, [tab]: true }));
 
-    let queryState = "";
-    if (tab === "merged") queryState = "is:merged";
-    else if (tab === "open") queryState = "is:open";
-    else if (tab === "closed") queryState = "is:closed+is:unmerged";
-
-    const url = `https://api.github.com/search/issues?q=author:${githubUser}+type:pr+${queryState}&sort=created-desc&per_page=50`;
-
     try {
-      const res = await fetch(url);
+      const res = await fetch("/api/github/activity");
       if (!res.ok) throw new Error("Rate limit or connection error");
       const data = await res.json();
 
-      if (data.items) {
-        const formattedPRs: PullRequest[] = data.items.map((item: any) => {
-          // Parse repository name from repo url (e.g. https://api.github.com/repos/user/repo)
-          const repoParts = item.repository_url.split("/repos/");
-          const repoName = repoParts.length > 1 ? repoParts[1] : "unknown/repo";
-
-          return {
-            id: item.id,
-            title: item.title,
-            repo: repoName,
-            url: item.html_url,
-            number: item.number,
-            created_at: item.created_at
-          };
-        });
-
-        setPRs(prev => ({ ...prev, [tab]: formattedPRs }));
-        setTotalCount(prev => ({ ...prev, [tab]: data.total_count }));
+      const livePRs = data.prs?.[tab];
+      if (livePRs) {
+        setPRs(prev => ({ ...prev, [tab]: livePRs.items }));
+        setTotalCount(prev => ({ ...prev, [tab]: livePRs.totalCount }));
       }
     } catch (err) {
       console.warn(`GitHub API fetch failed for ${tab}, using local fallback details.`, err);
