@@ -739,6 +739,17 @@ export default function App() {
             <footer className="mt-16 relative pt-12 text-center flex flex-col items-center">
               <SectionDivider position="top" />
               <QuotesCarousel />
+              <p className="mt-8 text-[10px] font-mono text-[var(--text-muted)]">
+                © {new Date().getFullYear()} Ashish Kumar. All rights reserved. ·{" "}
+                <a
+                  href="https://github.com/ashishkumar62649/Portfolio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-[var(--text-primary)] transition-colors"
+                >
+                  View source on GitHub
+                </a>
+              </p>
             </footer>
           </>
         )}
