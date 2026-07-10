@@ -256,31 +256,28 @@ export default function App() {
     };
   }, []);
 
-  // IntersectionObserver to highlight active sidebar index link on scroll
+  // Keep the sidebar index aligned with the section nearest the viewport.
   useEffect(() => {
-    const sections = configData.sectionIds;
-    const observers = sections.map((id) => {
-      const element = document.getElementById(id);
-      if (!element) return null;
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setActiveSection(id);
-          }
-        },
-        { rootMargin: "-30% 0px -60% 0px" }
-      );
-      observer.observe(element);
-      return { observer, element };
-    });
-
+    let frame = 0;
+    const updateActiveSection = () => {
+      frame = 0;
+      const targetY = window.innerHeight * 0.35;
+      const current = configData.sectionIds
+        .map((id) => ({ id, top: document.getElementById(id)?.getBoundingClientRect().top ?? Infinity }))
+        .filter(({ top }) => top <= targetY)
+        .at(-1);
+      if (current) setActiveSection(current.id);
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateActiveSection);
+    };
+    updateActiveSection();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     return () => {
-      observers.forEach((obs) => {
-        if (obs) {
-          obs.observer.unobserve(obs.element);
-        }
-      });
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
 
