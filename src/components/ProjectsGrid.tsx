@@ -41,10 +41,10 @@ export function TechIcons({ technologies, theme }: { technologies: string[]; the
     }
     // Contrast overrides for dark mode
     if (slug === "fastify" || slug === "cesium" || slug === "langchain" || slug === "nextdotjs" || slug === "github") {
-      return `https://cdn.simpleicons.org/${slug}/${theme === "light" ? "000000" : "ffffff"}`;
+      return `/icons/simple/${slug}-${theme === "light" ? "000000" : "ffffff"}.svg`;
     }
     const color = techColors[slug] || "71717a";
-    return `https://cdn.simpleicons.org/${slug}/${color}`;
+    return `/icons/simple/${slug}-${color}.svg`;
   };
 
   return (

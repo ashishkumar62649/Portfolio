@@ -1,10 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Check, Copy, ExternalLink } from "lucide-react";
 
 interface SocialHoverCardProps {
   platform: string;
   children: React.ReactNode;
+  initialOpen?: boolean;
 }
 
 interface GithubData {
@@ -17,12 +18,18 @@ interface GithubData {
   login: string;
 }
 
-export default function SocialHoverCard({ platform, children }: SocialHoverCardProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function SocialHoverCard({ platform, children, initialOpen = false }: SocialHoverCardProps) {
+  const [isOpen, setIsOpen] = useState(initialOpen);
   const [copied, setCopied] = useState(false);
   const [githubData, setGithubData] = useState<GithubData | null>(null);
   const [loadingGithub, setLoadingGithub] = useState(false);
   const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (initialOpen && platform === "github") fetchGithubProfile();
+    // The deferred card only needs this mount-time refresh.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -57,7 +64,7 @@ export default function SocialHoverCard({ platform, children }: SocialHoverCardP
           login: data.login || "ashishkumar62649"
         });
       }
-    } catch (e) {
+    } catch {
       console.warn("Failed to fetch GitHub profile for hover card, using static fallback.");
     } finally {
       setLoadingGithub(false);
@@ -74,7 +81,7 @@ export default function SocialHoverCard({ platform, children }: SocialHoverCardP
 
   // Pre-generate static fallback for offline or loading states
   const fallbackGithub = {
-    avatar_url: "/images/avatar.png",
+    avatar_url: "/images/avatar.webp",
     name: "Ashish Kumar",
     bio: "AI & Data Science Undergraduate @ IIT Guwahati. Building agentic workflows & ML solutions.",
     location: "Guwahati, Assam, India",
@@ -119,7 +126,7 @@ export default function SocialHoverCard({ platform, children }: SocialHoverCardP
                     src={activeGithub.avatar_url}
                     alt=""
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/images/avatar.png";
+                      (e.target as HTMLImageElement).src = "/images/avatar.webp";
                     }}
                     className="w-12 h-12 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm"
                   />
@@ -164,7 +171,7 @@ export default function SocialHoverCard({ platform, children }: SocialHoverCardP
                 {/* Custom LinkedIn header banner */}
                 <div 
                   className="relative h-14 w-full rounded-t-lg bg-cover bg-center -mx-4 -mt-4 mb-2 overflow-hidden"
-                  style={{ backgroundImage: "url('/images/linkedin_banner.png')" }}
+                  style={{ backgroundImage: "url('/images/linkedin_banner.webp')" }}
                 >
                   <div className="absolute inset-0 bg-black/15" />
                 </div>
@@ -172,7 +179,7 @@ export default function SocialHoverCard({ platform, children }: SocialHoverCardP
                 <div className="flex items-start gap-2.5">
                   <div className="relative">
                     <img
-                      src="/images/avatar.png"
+                      src="/images/avatar.webp"
                       alt=""
                       className="w-12 h-12 rounded-full border-2 border-white dark:border-zinc-950 shadow-md -mt-8 z-10 bg-zinc-900 object-cover"
                     />
@@ -226,7 +233,7 @@ export default function SocialHoverCard({ platform, children }: SocialHoverCardP
                 <div className="flex items-center gap-3 mt-1">
                   <div className="p-[2.5px] rounded-full bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600">
                     <img
-                      src="/images/avatar.png"
+                      src="/images/avatar.webp"
                       alt=""
                       className="w-11 h-11 rounded-full border border-white dark:border-zinc-950 bg-zinc-900 object-cover"
                     />
@@ -272,7 +279,7 @@ export default function SocialHoverCard({ platform, children }: SocialHoverCardP
                 </div>
                 <div className="flex items-start gap-3">
                   <img
-                    src="/images/avatar.png"
+                    src="/images/avatar.webp"
                     alt=""
                     className="w-10 h-10 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-900 object-cover"
                   />
@@ -306,7 +313,7 @@ export default function SocialHoverCard({ platform, children }: SocialHoverCardP
                 <div className="flex items-start gap-2.5">
                   <div className="relative -mt-8 ml-1">
                     <img
-                      src="/images/discord_avatar.png"
+                      src="/images/discord_avatar.webp"
                       alt=""
                       className="w-12 h-12 rounded-full border-2 border-white dark:border-zinc-950 bg-zinc-900 object-cover"
                     />
@@ -344,19 +351,19 @@ export default function SocialHoverCard({ platform, children }: SocialHoverCardP
                   
                   <div className="grid grid-cols-2 gap-1.5 text-[10px] font-mono">
                     <div className="flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400">
-                      <img src="https://cdn.simpleicons.org/epicgames/808080" alt="" className="w-3.5 h-3.5 object-contain" />
+                      <img src="/icons/simple/epicgames-808080.svg" alt="" className="w-3.5 h-3.5 object-contain" />
                       <span className="truncate" title="ashishkumar62649">ashishkumar6...</span>
                     </div>
                     <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-650 dark:text-zinc-350 hover:underline">
-                      <img src="https://cdn.simpleicons.org/spotify/1db954" alt="" className="w-3.5 h-3.5 object-contain" />
+                      <img src="/icons/simple/spotify-1db954.svg" alt="" className="w-3.5 h-3.5 object-contain" />
                       <span>Ashish ↗</span>
                     </a>
                     <a href="https://steamcommunity.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-650 dark:text-zinc-350 hover:underline">
-                      <img src="https://cdn.simpleicons.org/steam/808080" alt="" className="w-3.5 h-3.5 object-contain" />
+                      <img src="/icons/simple/steam-808080.svg" alt="" className="w-3.5 h-3.5 object-contain" />
                       <span>Steam ↗</span>
                     </a>
                     <a href="https://twitch.tv" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-650 dark:text-zinc-350 hover:underline">
-                      <img src="https://cdn.simpleicons.org/twitch/9146ff" alt="" className="w-3.5 h-3.5 object-contain" />
+                      <img src="/icons/simple/twitch-9146ff.svg" alt="" className="w-3.5 h-3.5 object-contain" />
                       <span>Twitch ↗</span>
                     </a>
                   </div>

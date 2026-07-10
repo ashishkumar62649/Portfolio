@@ -47,6 +47,10 @@ export default function BannerParticles() {
     window.addEventListener("resize", handleResize);
 
     const animate = () => {
+      if (document.hidden) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
       ctx.clearRect(0, 0, width, height);
 
       particles.forEach((p) => {

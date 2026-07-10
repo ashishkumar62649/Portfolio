@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
-import { Mail, FileText, Palette, ChevronLeft, ChevronRight, ArrowLeft, ExternalLink, Download, Play } from "lucide-react";
+import { lazy, Suspense, useState, useEffect } from "react";
+import { Mail, FileText, Palette, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import BannerParticles from "./components/BannerParticles";
-import CommandMenu from "./components/CommandMenu";
 import ExperienceList from "./components/ExperienceList";
-import ProjectsGrid, { TechIcons } from "./components/ProjectsGrid";
-import projectsData from "./data/projects.json";
+import ProjectsGrid from "./components/ProjectsGrid";
 import skillsData from "./data/skills.json";
 import profileData from "./data/profile.json";
 import socialsData from "./data/socials.json";
@@ -14,13 +12,18 @@ import type { SkillItem, SocialItem } from "./data/types";
 import GithubGraph from "./components/GithubGraph";
 import OpenSourceContributions from "./components/OpenSourceContributions";
 import BlogList from "./components/BlogList";
-import BlogPost from "./components/BlogPost";
 import QuotesCarousel from "./components/QuotesCarousel";
 import { ImageTrail } from "./components/ui/image-trail";
 import { trailImages } from "./components/trail-images";
 import Preloader from "./components/Preloader";
 import { highlightKeywords } from "./utils/text";
-import SocialHoverCard from "./components/SocialHoverCard";
+import SocialHoverCard from "./components/DeferredSocialHoverCard";
+
+const BlogPost = lazy(() => import("./components/BlogPost"));
+const CommandMenu = lazy(() => import("./components/CommandMenu"));
+const ContactView = lazy(() => import("./components/ContactView"));
+const ResumeView = lazy(() => import("./components/ResumeView"));
+const ProjectsArchive = lazy(() => import("./components/ProjectsArchive"));
 
 // Component for structural dotted section grids
 const SectionDivider = ({ position = "top" }: { position?: "top" | "bottom" }) => {
@@ -42,6 +45,24 @@ const SectionDivider = ({ position = "top" }: { position?: "top" | "bottom" }) =
 };
 
 const videos = configData.videos;
+const posterFor = (video: string) => `/video/posters/${video.split("/").pop()!.replace(/\.mp4$/i, ".webp")}`;
+
+function Clock() {
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const pad = (num: number) => String(num).padStart(2, "0");
+      setTime(`${pad(now.getHours())}.${pad(now.getMinutes())}.${pad(now.getSeconds())}`);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return <>{time}</>;
+}
 
 const LinkedinIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -66,7 +87,6 @@ export default function App() {
   const [theme, setTheme] = useState<Theme>("dark");
   const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("experience");
-  const [time, setTime] = useState("");
   const [videoIndex, setVideoIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isBannerHovered, setIsBannerHovered] = useState(false);
@@ -120,13 +140,10 @@ export default function App() {
     }
   };
 
-  // Select a random video index and subset of 15 trail images on component mount
+  // Select a random video; keep the complete trail image pool available.
   useEffect(() => {
     setVideoIndex(Math.floor(Math.random() * videos.length));
-    
-    // Choose 15 random images from the pool of 287 to avoid heavy parallel fetching
-    const shuffled = [...trailImages].sort(() => 0.5 - Math.random());
-    setSessionTrailImages(shuffled.slice(0, 15));
+    setSessionTrailImages(trailImages);
   }, []);
 
   const handleNextVideo = () => {
@@ -150,18 +167,6 @@ export default function App() {
       handlePrevVideo();
     }
   };
-
-  // Sync clock time with periods
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const pad = (num: number) => String(num).padStart(2, "0");
-      setTime(`${pad(now.getHours())}.${pad(now.getMinutes())}.${pad(now.getSeconds())}`);
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Set theme stylesheet classes on body
   useEffect(() => {
@@ -452,6 +457,8 @@ export default function App() {
             >
               <video
                 src={videos[videoIndex]}
+                poster={posterFor(videos[videoIndex])}
+                preload="metadata"
                 autoPlay
                 muted
                 playsInline
@@ -494,7 +501,7 @@ export default function App() {
         {/* Clock Overlay */}
         <div className="absolute bottom-3 right-2 z-10 pointer-events-auto">
           <div className="text-[20px] sm:text-[24px] tracking-[0.15em] text-[var(--text-muted)] font-doto font-bold select-none">
-            {time}
+            <Clock />
           </div>
         </div>
       </div>
@@ -631,7 +638,7 @@ export default function App() {
                         {social.hasCustomIcon ? (
                           <LinkedinIcon className="w-3.5 h-3.5 text-[#0a66c2] group-hover:scale-110 transition-transform duration-200" />
                         ) : (
-                          <img src={`https://cdn.simpleicons.org/${social.slug}/${social.brandColor}`} alt="" className="w-3.5 h-3.5 opacity-90 group-hover:scale-110 transition-all duration-200" />
+                          <img src={`/icons/simple/${social.slug}-${social.brandColor}.svg`} alt="" className="w-3.5 h-3.5 opacity-90 group-hover:scale-110 transition-all duration-200" />
                         )}
                         {social.name}
                       </span>
@@ -700,11 +707,11 @@ export default function App() {
                       src={
                         (skill.slug === "microsoftexcel" || skill.slug === "powerbi")
                           ? `/icons/${skill.slug}.svg`
-                          : `https://cdn.simpleicons.org/${skill.slug}/${
+                          : `/icons/simple/${skill.slug}-${
                               (skill.slug === "nextdotjs" || skill.slug === "github")
                                 ? (theme === "light" ? "000000" : "ffffff")
                                 : skill.color
-                            }`
+                            }.svg`
                       }
                       alt="" 
                       className="w-3.5 h-3.5 object-contain" 
@@ -740,262 +747,17 @@ export default function App() {
         )}
 
         {view === "contact" && (
-          /* CONTACT FORM CONTENT */
-          <div className="flex flex-col text-left mt-4 w-full animate-fade-in">
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-              
-              {/* Full Name */}
-              <div className="flex flex-col gap-1.5 py-6 border-b border-[var(--border-color)]">
-                <label className="text-[10px] font-bold font-mono tracking-widest text-[var(--text-muted)] uppercase">
-                  {configData.contactForm.nameLabel}
-                </label>
-                <input 
-                  type="text"
-                  required
-                  placeholder={configData.contactForm.namePlaceholder}
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full bg-transparent border-none outline-none text-[14px] text-[var(--text-primary)] placeholder:text-zinc-600 dark:placeholder:text-zinc-500 py-1 px-0 focus:outline-none focus:ring-0"
-                />
-              </div>
-
-              {/* Email Address */}
-              <div className="flex flex-col gap-1.5 py-6 border-b border-[var(--border-color)]">
-                <label className="text-[10px] font-bold font-mono tracking-widest text-[var(--text-muted)] uppercase">
-                  {configData.contactForm.emailLabel}
-                </label>
-                <input 
-                  type="email"
-                  required
-                  placeholder={configData.contactForm.emailPlaceholder}
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full bg-transparent border-none outline-none text-[14px] text-[var(--text-primary)] placeholder:text-zinc-600 dark:placeholder:text-zinc-500 py-1 px-0 focus:outline-none focus:ring-0"
-                />
-              </div>
-
-              {/* Message */}
-              <div className="flex flex-col gap-1.5 py-6 border-b border-[var(--border-color)]">
-                <label className="text-[10px] font-bold font-mono tracking-widest text-[var(--text-muted)] uppercase">
-                  {configData.contactForm.messageLabel}
-                </label>
-                <textarea 
-                  required
-                  rows={4}
-                  placeholder={configData.contactForm.messagePlaceholder}
-                  value={formData.message}
-                  onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                  className="w-full bg-transparent border-none outline-none text-[14px] text-[var(--text-primary)] placeholder:text-zinc-600 dark:placeholder:text-zinc-500 py-1 px-0 resize-none focus:outline-none focus:ring-0"
-                />
-              </div>
-
-              {/* Status Message overlay */}
-              {submitStatus === "success" && (
-                <div className="mt-4 p-3 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-mono">
-                  {configData.contactForm.successMessage}
-                </div>
-              )}
-
-              {submitStatus === "error" && (
-                <div className="mt-4 p-3 rounded bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-mono">
-                  Failed to send message. Please try again or email directly.
-                </div>
-              )}
-
-              {/* Submit Button */}
-              <button 
-                type="submit"
-                disabled={submitStatus === "sending"}
-                className="mx-auto mt-12 px-6 py-2 border border-[var(--border-color)] rounded-[6px] text-xs font-mono font-bold bg-[var(--badge-bg)] hover:bg-[var(--card-hover-bg)] text-[var(--text-primary)] cursor-pointer active:scale-95 transition-all shadow-md disabled:opacity-50"
-              >
-                {submitStatus === "sending" ? configData.contactForm.sendingLabel : configData.contactForm.sendLabel}
-              </button>
-            </form>
-
-            {/* Socials segment at bottom of Contact page */}
-            <div className="mt-16 text-left">
-              <h2 className="text-[13px] text-[var(--text-muted)] mb-2 font-mono">
-                {configData.socialsSection.contactLabel}
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {getSocialsList(theme).map((social) => (
-                  <SocialHoverCard key={social.name} platform={social.slug}>
-                    <a 
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group relative block rounded-[4px] px-3 py-1.5 text-[12px]"
-                    >
-                      <span aria-hidden="true" className="absolute inset-0 rounded-[4px] overflow-hidden transition-colors duration-200 bg-[var(--badge-bg)] hover:bg-[var(--card-hover-bg)] border border-[var(--border-color)]" />
-                      <span className="relative flex items-center gap-1.5 opacity-75 group-hover:opacity-100 transition-opacity duration-300 font-semibold text-[var(--text-primary)]">
-                        {social.hasCustomIcon ? (
-                          <LinkedinIcon className="w-3.5 h-3.5 text-[#0a66c2] mr-1.5" />
-                        ) : (
-                          <img src={`https://cdn.simpleicons.org/${social.slug}/${social.brandColor}`} alt="" className="w-3.5 h-3.5 opacity-90 mr-1.5" />
-                        )}
-                        {social.name}
-                      </span>
-                    </a>
-                  </SocialHoverCard>
-                ))}
-              </div>
-            </div>
-          </div>
+          <Suspense fallback={null}>
+            <ContactView theme={theme} formData={formData} setFormData={setFormData} submitStatus={submitStatus} onSubmit={handleSubmit} />
+          </Suspense>
         )}
 
-        {view === "resume" && (
-          /* RESUME PDF VIEW */
-          <div className="flex flex-col text-left mt-4 w-full animate-fade-in">
-            {/* Header Document bar */}
-            <div className="flex items-center justify-between p-4 bg-[var(--badge-bg)] border border-[var(--border-color)] border-b-0 rounded-t-xl">
-              <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-red-500" />
-                <div className="flex flex-col text-left">
-                  <span className="font-semibold text-sm text-[var(--text-primary)]">
-                    {profileData.resume.label}
-                  </span>
-                  <span className="text-[10px] text-[var(--text-muted)] font-mono">
-                    {configData.resume.pdfLabel}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <a 
-                  href={profileData.resume.pdf} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="p-2 border border-[var(--border-color)] rounded-[6px] text-[var(--text-primary)] hover:bg-[var(--card-hover-bg)] cursor-pointer active:scale-95 transition-all"
-                  title={configData.resume.openPdfTooltip}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-                
-                <a 
-                  href={profileData.resume.docx} 
-                  download 
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--text-primary)] hover:opacity-90 text-[var(--bg-color)] border border-[var(--border-color)] rounded-[6px] text-xs font-mono font-bold cursor-pointer active:scale-95 transition-all shadow-md"
-                  title={configData.resume.downloadDocxTooltip}
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  {configData.buttons.download}
-                </a>
-              </div>
-            </div>
 
-            {/* Embedded PDF iframe */}
-            <div className="w-full border border-[var(--border-color)] rounded-b-xl overflow-hidden bg-neutral-100 dark:bg-neutral-900 shadow-md">
-              <iframe 
-                src={`${profileData.resume.pdf}#toolbar=0`} 
-                className="w-full h-[750px] border-none"
-                title={configData.resume.pdfPreviewTitle}
-              />
-            </div>
+        {view === "resume" && <Suspense fallback={null}><ResumeView /></Suspense>}
 
-            {/* Raw txt format download option at bottom */}
-            <div className="mt-12 text-left">
-              <h2 className="text-[13px] text-[var(--text-muted)] mb-2 font-mono">
-                {configData.resume.lookingForAnother}
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                <a 
-                  href={profileData.resume.txt} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="group relative block rounded-[4px] px-3 py-1.5 text-[12px]"
-                >
-                  <span aria-hidden="true" className="absolute inset-0 rounded-[4px] overflow-hidden transition-colors duration-200 bg-[var(--badge-bg)] hover:bg-[var(--card-hover-bg)] border border-[var(--border-color)]" />
-                  <span className="relative flex items-center gap-1.5 opacity-75 group-hover:opacity-100 transition-opacity duration-300 font-semibold text-[var(--text-primary)]">
-                    <FileText className="w-3.5 h-3.5" />
-                    {configData.resume.viewRawText}
-                  </span>
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
 
-        {view === "projects" && (
-          /* ALL PROJECTS FULL ARCHIVE VIEW */
-          <div className="flex flex-col text-left mt-4 w-full animate-fade-in">
-            {/* Scrollable Container with max-height 780px and custom scrollbar */}
-            <div className="max-h-[780px] overflow-y-auto pr-2 custom-scrollbar">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10 text-left animate-fade-in">
-                {projectsData.map((proj, idx) => (
-                  <div key={idx} className="group relative flex flex-col cursor-pointer w-full">
-                    {/* Card Preview Mockup */}
-                    <div className="relative aspect-[1.6/1] w-full rounded-xl overflow-hidden border border-[var(--border-color)] bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-                      {/* Gradient background */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${proj.previewColor} opacity-40 group-hover:opacity-60 transition-opacity duration-300`} />
-                      
-                      {/* Grid grid background */}
-                      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
+        {view === "projects" && <Suspense fallback={null}><ProjectsArchive theme={theme} /></Suspense>}
 
-                      {/* Play overlay button */}
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
-                        <div className="w-12 h-12 rounded-full bg-white/10 dark:bg-black/40 border border-white/20 flex items-center justify-center text-white backdrop-blur-sm shadow-xl">
-                          <Play className="w-5 h-5 fill-white text-white ml-0.5" />
-                        </div>
-                      </div>
-
-                      {/* Miniature app preview box */}
-                      <div className="absolute bottom-0 left-1/2 w-[85%] h-[75%] rounded-t-[10px] bg-white dark:bg-[#0a0a0a] border border-black/5 dark:border-white/[0.15] border-b-0 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.5)] z-20 transition-transform duration-300 group-hover:translate-y-1 -translate-x-1/2 overflow-hidden p-3 font-mono text-[8px] text-zinc-400 select-none">
-                        <div className="flex items-center gap-1.5 border-b border-neutral-100 dark:border-neutral-900 pb-2 mb-2">
-                          <div className="size-1.5 rounded-full bg-red-400" />
-                          <div className="size-1.5 rounded-full bg-amber-400" />
-                          <div className="size-1.5 rounded-full bg-emerald-400" />
-                          <span className="text-[6px] text-zinc-500 pl-2">localhost:3000</span>
-                        </div>
-                        <p className="text-[7px] font-bold text-[var(--text-primary)]">{proj.title}.spec</p>
-                        <pre className="text-zinc-400 mt-1.5 leading-normal truncate">import {"{ components }"} from "./ui";</pre>
-                        <pre className="text-zinc-500 leading-normal truncate">const dev = await launch();</pre>
-                        <pre className="text-emerald-500 leading-normal truncate">&gt; compiling component tree...</pre>
-                      </div>
-                    </div>
-
-                    {/* Details */}
-                    <div className="mt-4 flex flex-col px-0.5">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
-                        <h3 className="text-[15px] font-bold text-[var(--text-primary)] leading-tight">
-                          {proj.title}
-                        </h3>
-                        
-                        {/* Status Badge */}
-                        <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-[var(--border-color)] bg-white dark:bg-zinc-900/50 w-fit shrink-0">
-                          <div className={`w-1.5 h-1.5 rounded-full ${
-                            proj.status === "Live" ? "bg-emerald-500 animate-pulse" :
-                            proj.status === "Building" ? "bg-red-500" : "bg-zinc-400"
-                          }`} />
-                          <span className="text-[10px] font-mono font-medium text-[var(--text-secondary)]">
-                            {proj.status}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Description */}
-                      <p className="mt-2 text-[13px] text-[var(--text-secondary)] leading-relaxed pr-2">
-                        {proj.description}
-                      </p>
-
-                      {/* Bottom Actions */}
-                      <div className="flex items-center justify-between gap-3 mt-4 pt-3 border-t border-[var(--border-color)]">
-                        <TechIcons technologies={proj.technologies} theme={theme} />
-                        <a
-                          href={proj.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[12px] font-medium text-zinc-400 hover:text-zinc-900 dark:text-zinc-600 dark:hover:text-zinc-200 transition-colors flex items-center gap-0.5"
-                        >
-                          {configData.buttons.viewProject}
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
 
         {view === "pull-requests" && (
           /* ALL PRs ARCHIVE VIEW */
@@ -1006,19 +768,23 @@ export default function App() {
         {view === "blog-post" && (
           /* BLOG POST DETAILED VIEW */
           <div className="flex flex-col text-left mt-4 w-full animate-fade-in">
-            <BlogPost slug={activeBlogSlug || ""} />
+            <Suspense fallback={null}><BlogPost slug={activeBlogSlug || ""} /></Suspense>
           </div>
         )}
       </div>
 
       {/* 13. COMMAND PALETTE DIALOG OVERLAY */}
-      <CommandMenu 
-        isOpen={isCommandMenuOpen}
-        onClose={() => setIsCommandMenuOpen(false)}
-        setTheme={setTheme}
-        scrollToSection={scrollToSection}
-        setView={setView}
-      />
+      {isCommandMenuOpen && (
+        <Suspense fallback={null}>
+          <CommandMenu
+            isOpen
+            onClose={() => setIsCommandMenuOpen(false)}
+            setTheme={setTheme}
+            scrollToSection={scrollToSection}
+            setView={setView}
+          />
+        </Suspense>
+      )}
 
     </ImageTrail>
     </>

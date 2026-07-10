@@ -75,14 +75,11 @@ export default function OpenSourceContributions({ isFullArchive = false, setView
     }
   };
 
-  // Fetch merged PRs on mount
-  useEffect(() => {
-    fetchPRsForTab("merged");
-  }, []);
-
-  // Fetch other tabs when activeTab changes
+  // Fetch the active tab once, including the initial merged tab.
   useEffect(() => {
     fetchPRsForTab(activeTab);
+    // Switching tabs is the only trigger; loading state must not refetch.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   const activePRs = prs[activeTab] || [];
