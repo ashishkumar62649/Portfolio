@@ -85,6 +85,23 @@ export function ImageTrail({
     };
   }, []);
 
+  React.useEffect(() => {
+    if (!normalizedImages.length) return;
+    const preload = (image: ImageTrailImage) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = image.src;
+    };
+    normalizedImages.slice(0, 12).forEach(preload);
+    const rest = normalizedImages.slice(12);
+    const idle = window.requestIdleCallback;
+    if (idle) {
+      idle(() => rest.forEach(preload), { timeout: 2000 });
+    } else {
+      window.setTimeout(() => rest.forEach(preload), 1000);
+    }
+  }, [normalizedImages]);
+
   const removeItem = React.useCallback((id: string) => {
     setTrail((current) => current.filter((item) => item.id !== id));
   }, []);
