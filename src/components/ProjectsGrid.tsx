@@ -23,7 +23,8 @@ const techColors: Record<string, string> = {
   jupyter: "f37626",
   adobe: "ff0000",
   microsoftexcel: "107c41",
-  powerbi: "f2c811"
+  powerbi: "f2c811",
+  sqlite: "003b57"
 };
 
 export function TechIcons({ technologies, theme }: { technologies: string[]; theme: string }) {

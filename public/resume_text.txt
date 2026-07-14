@@ -1,15 +1,14 @@
 ASHISH KUMAR
-+91 8852906820 | ashishkumar62649@gmail.com | Bangalore, India | Portfolio (coming soon) | LinkedIn | GitHub
++91 8852906820 | ashishkumar62649@gmail.com | Bangalore, India | Portfolio | LinkedIn | GitHub
 SUMMARY
 AI and Data Science undergraduate at IIT Guwahati with hands-on data science internship experience and a strong interest in machine learning, agentic AI systems, and Python/API-based problem solving. Comfortable building end-to-end pipelines, from data processing to RAG and agent-based applications.
 EDUCATION
-Indian Institute of Technology Guwahati	Expected 2029
-BSc (Honors) in Data Science and Artificial Intelligence	
+Indian Institute of Technology GuwahatiExpected 2029
+BSc (Honors) in Data Science and Artificial Intelligence
 – Relevant Coursework: Python Programming, Data Science, Artificial Intelligence, Statistics, Probability, Databases, Machine Learning
-– Class 12: 85.7% (2021)  |  Class 10: 72% (2019)
 EXPERIENCE
-Data Scientist Intern	Dec 2025 – Jan 2026
-Evoastra	Remote
+Data Scientist InternDec 2025 – Jan 2026
+EvoastraRemote
 – Built an unsupervised anomaly detection pipeline to identify unusual building energy consumption patterns from meter data.
 – Cleaned and transformed data, handled missing values, engineered features, and prepared reproducible model-training notebooks.
 – Trained and compared Isolation Forest and Local Outlier Factor baselines; documented code, results, and project workflow on GitHub.
@@ -18,19 +17,14 @@ god-eyes | TypeScript, Python, React, CesiumJS, Fastify, PostGIS  |  GitHub
 – Built a full-stack geospatial intelligence prototype with 8 live data layers, including aviation, maritime, satellites, weather, earthquakes, borders, energy, and news, on a CesiumJS 3D globe.
 – Integrated 10+ external data sources using Python fetch/normalize pipelines, Fastify REST APIs, and WebSocket broadcasters with client-side filtering.
 – Designed a PostgreSQL/PostGIS schema with 40+ tables, shared Zod contracts, CI, and Vitest coverage for an active 678-commit prototype.
-AI-Codebase-Onboarding-Agent | Python, LangGraph, FastAPI, Streamlit, pgvector  |  GitHub
-– Building a code-aware RAG assistant that indexes repositories, extracts symbols/routes, chunks functions, and answers architecture, debugging, and impact-analysis questions with file-level evidence.
-AI-Research-Paper-to-Prototype-Agent | Python, LangGraph, FastAPI, Streamlit, PyMuPDF  |  GitHub
-– Designing an agentic RAG workflow that parses AI/ML papers into method breakdowns, implementation roadmaps, starter code structure, experiment configs, and reproducibility reports.
-AI-RFP-Proposal-Generative-Agent | Python, LangGraph, FastAPI, Streamlit, pgvector, Pydantic  |  GitHub
-– Designing an RFP/tender analysis agent to extract requirements, retrieve company evidence, score compliance, identify risks/gaps, and generate clarification questions and proposal drafts.
-ACHIEVEMENTS
-– Independently built and shipped 4+ AI/data engineering projects spanning geospatial systems, agentic RAG, and anomaly detection — several maintained with CI pipelines and automated test coverage.
-– Completed certifications from OpenAI and Anthropic (Claude), along with selected Coursera courses and Google badges, reflecting continued self-directed learning in AI/ML.
+DeepOrra | Python, SQLite/FTS5, Chroma, Sentence Transformers, Streamlit, MCP  |  GitHub
+– Built a local-first repository intelligence platform that scans, parses, chunks, embeds, and graphs Python code using AST analysis, Sentence Transformers, SQLite FTS5, and Chroma.
+– Exposed lexical, semantic, and hybrid search plus symbol, route, related-code, and change-impact analysis through a Streamlit dashboard and 8 read-only MCP tools.
 TECHNICAL SKILLS
 Languages: Python, TypeScript, SQL, R, C
 Data Science & ML: Pandas, NumPy, scikit-learn, Jupyter Notebook, Matplotlib, Seaborn, feature engineering, anomaly detection
 Backend & APIs: FastAPI, Fastify, REST APIs, WebSockets, Pydantic, Zod, Streamlit
 Databases & Data Systems: PostgreSQL, PostGIS, pgvector, MySQL, time-series data, SQL migrations
 AI / Agents / RAG: LangGraph, LangChain, LLM APIs, embeddings, vector search, prompt workflows, structured extraction
+AI Coding Tools: OpenAI Codex, Claude Code, OpenCode
 Tools & Analytics: Git, GitHub, GitHub Actions, Docker basics, pnpm, CLI workflows, Excel, Power BI

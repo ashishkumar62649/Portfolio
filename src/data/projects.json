@@ -1,35 +1,19 @@
 [
   {
     "title": "god-eyes",
-    "status": "Live",
+    "status": "Building",
     "description": "A full-stack geospatial intelligence prototype with 8 live data layers (aviation, maritime, satellites, weather, earthquakes, borders, energy, and news) on a CesiumJS 3D globe.",
     "githubUrl": "https://github.com/ashishkumar62649/god-eyes",
     "previewColor": "from-amber-600/20 to-orange-900/20",
     "technologies": ["TypeScript", "React", "CesiumJS", "Fastify", "PostgreSQL", "PostGIS"]
   },
   {
-    "title": "AI-Codebase-Onboarding-Agent",
+    "title": "DeepOrra",
     "status": "Building",
-    "description": "A code-aware RAG assistant that indexes repositories, extracts symbols/routes, chunks functions, and answers debugging and impact-analysis questions with file-level evidence.",
-    "githubUrl": "https://github.com/ashishkumar62649/AI-Codebase-Onboarding-Agent",
-    "previewColor": "from-blue-600/20 to-indigo-900/20",
-    "technologies": ["Python", "LangGraph", "FastAPI", "Streamlit", "pgvector"]
-  },
-  {
-    "title": "AI-Research-Paper-to-Prototype-Agent",
-    "status": "Building",
-    "description": "An agentic RAG workflow that parses AI/ML papers into method breakdowns, implementation roadmaps, starter code structure, and reproducibility reports.",
-    "githubUrl": "https://github.com/ashishkumar62649/AI-Research-Paper-to-Prototype-Agent",
-    "previewColor": "from-purple-600/20 to-pink-900/20",
-    "technologies": ["Python", "LangGraph", "FastAPI", "Streamlit", "PyMuPDF"]
-  },
-  {
-    "title": "AI-RFP-Proposal-Generative-Agent",
-    "status": "Building",
-    "description": "An RFP/tender analysis agent to extract requirements, retrieve company evidence, score compliance, identify risks, and generate proposal drafts.",
-    "githubUrl": "https://github.com/ashishkumar62649/AI-RFP-Proposal-Generative-Agent",
-    "previewColor": "from-emerald-600/20 to-teal-900/20",
-    "technologies": ["Python", "LangGraph", "FastAPI", "Streamlit", "pgvector"]
+    "description": "A local-first repository intelligence platform that scans, parses, chunks, embeds, and graphs Python code using AST analysis, Sentence Transformers, SQLite FTS5, and Chroma.",
+    "githubUrl": "https://github.com/ashishkumar62649/deeporra",
+    "previewColor": "from-indigo-600/20 to-violet-900/20",
+    "technologies": ["Python", "SQLite/FTS5", "Chroma", "Sentence Transformers", "Streamlit", "MCP"]
   },
   {
     "title": "building-energy-anomaly-detection",

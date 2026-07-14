@@ -96,6 +96,8 @@
     "pandas": "pandas",
     "numpy": "numpy",
     "jupyter": "jupyter",
-    "pymupdf": "adobe"
+    "pymupdf": "adobe",
+    "sqlite/fts5": "sqlite",
+    "sqlite": "sqlite"
   }
 }

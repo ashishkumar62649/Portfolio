@@ -7,7 +7,7 @@
   "bioHighlights": [
     { "text": "Experienced with scikit-learn, LangGraph, LangChain, REST APIs, LLM workflows, and RAG/agent design." },
     { "text": "Built anomaly detection systems for commercial building meter data." },
-    { "text": "Designing full-stack AI systems like god-eyes, AI-Codebase-Onboarding-Agent, and AI-RFP-Proposal-Generative-Agent.", "bold": true }
+    { "text": "Designing full-stack AI systems like god-eyes and DeepOrra.", "bold": true }
   ],
   "avatar": "/images/avatar.webp",
   "githubUsername": "ashishkumar62649",
